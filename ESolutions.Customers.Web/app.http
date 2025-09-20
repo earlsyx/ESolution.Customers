@@ -1,0 +1,35 @@
+@hostname=localhost
+@port=5132
+@host={{hostname}}:{{port}}
+
+GET http://{{host}}/customers
+Accept: application/json
+
+
+###
+
+@customerId=59dc4fcf-06fa-45cb-90ee-da4d21360b0c 
+GET http://{{host}}/customers/{{customerId}}
+Accept: application/json
+
+###
+
+
+POST http://{{host}}/customers
+Accept: application/json
+Content-Type: application/json
+
+{
+  "companyName": "New Customer"
+}
+###
+
+@customerIdToUpdate=59dc4fcf-06fa-45cb-90ee-da4d21360b0c 
+PUT http://{{host}}/customers/{{customerIdToUpdate}}
+Accept: application/json
+Content-Type: application/json
+
+{
+  "companyName": "Updated Customer"
+}
+###
