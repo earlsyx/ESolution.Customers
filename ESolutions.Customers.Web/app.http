@@ -8,7 +8,7 @@ Accept: application/json
 
 ###
 
-@customerId=59dc4fcf-06fa-45cb-90ee-da4d21360b0c 
+@customerId=25c9868f-a724-4257-9758-09e372116936 
 GET http://{{host}}/customers/{{customerId}}
 Accept: application/json
 
@@ -20,16 +20,25 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "companyName": "New Customer"
+  "companyName": ""
 }
 ###
 
-@customerIdToUpdate=59dc4fcf-06fa-45cb-90ee-da4d21360b0c 
+@customerIdToUpdate=25c9868f-a724-4257-9758-09e372116936 
 PUT http://{{host}}/customers/{{customerIdToUpdate}}
 Accept: application/json
 Content-Type: application/json
 
 {
-  "companyName": "Updated Customer"
+  "companyName": ""
 }
 ###
+
+@customerIdToDelete=25c9868f-a724-4257-9758-09e372116936 
+DELETE http://{{host}}/customers/{{customerIdToDelete}}
+Accept: application/json
+
+###
+
+GET http://{{host}}/brewcofee
+
