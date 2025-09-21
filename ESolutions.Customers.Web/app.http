@@ -20,7 +20,7 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "companyName": ""
+  "companyName": "NimblePros"
 }
 ###
 
@@ -30,7 +30,7 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "companyName": ""
+  "companyName": "NimblePros"
 }
 ###
 
