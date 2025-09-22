@@ -2,25 +2,29 @@
 
 public class CustomerData
 {
-    private readonly Guid _customer1Id = Guid.Parse("25c9868f-a724-4257-9758-09e372116936");
-    private readonly Guid _customer2Id = Guid.Parse("965057ae-a00e-4025-afb3-0a19a61be870");
-    private readonly List<Customer> _customers;
+    private static List<Customer> _customers = new();
 
     public CustomerData()
     {
-        _customers = new List<Customer>
+        string testEmail = "test@test.com";
+
+        _customers.AddRange(new[]
         {
-            new Customer(_customer1Id, "Acme", new List<Project>
-            {
-                new Project(Guid.NewGuid(), "Project 1", Guid.NewGuid()),
-                new Project(Guid.NewGuid(), "Project 2", Guid.NewGuid())
-            }),
-            new Customer(_customer2Id, "Contoso", new List<Project>
-            {
-                new Project(Guid.NewGuid(), "Project 3", Guid.NewGuid()),
-                new Project(Guid.NewGuid(), "Project 4", Guid.NewGuid())
-            })
-        };
+            new Customer(Guid.Parse("25c9868f-a724-4257-9758-09e372116936"),
+                "Acme Inc.", testEmail, new()),
+            new Customer(Guid.NewGuid(), "Contoso Ltd.", testEmail, new()),
+            new Customer(Guid.NewGuid(), "Fabrikam Corp.", testEmail, new())
+        });
+        _customers[0].Projects.AddRange(new[]
+        {
+            new Project(Guid.NewGuid(), "Project 1", Guid.NewGuid()),
+            new Project(Guid.NewGuid(), "Project 2", Guid.NewGuid())
+        });
+        _customers[1].Projects.AddRange(new[]
+        {
+            new Project(Guid.NewGuid(), "Project 3", Guid.NewGuid()),
+            new Project(Guid.NewGuid(), "Project 4", Guid.NewGuid())
+        });
     }
     public Task<List<Customer>> ListAsync()
     {

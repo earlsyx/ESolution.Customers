@@ -33,8 +33,11 @@ public static class CustomerEndpoints
         _customerGroupWithValidation.MapPost("/",
             async (CreateCustomerRequest request, CustomerData data) =>
             {
-                var newCustomer = new Customer(Guid.NewGuid(), request.CompanyName, new());
+                var newCustomer = new Customer(Guid.NewGuid(), request.CompanyName, request.EmailAddress, new());
                 await data.AddAsync(newCustomer);
+
+                var customerEmailService = new CustomerEmailService(new EmailMessageFactory(), new ConsoleOnlyEmailSenderService());
+                customerEmailService.SendWelcomeEmail(newCustomer);
                 return Results.Created($"/customers/{newCustomer.Id}", newCustomer);
             })
             .AddEndpointFilter<ValidateCustomer>()
@@ -76,7 +79,7 @@ public static class CustomerEndpoints
 
 }
 
-public record Customer(Guid Id, string CompanyName, List<Project> Projects);
+public record Customer(Guid Id, string CompanyName, string EmailAddress ,List<Project> Projects);
 public record Project(Guid Id, string ProjectName, Guid CustomerId);
 
 public readonly record struct UpdateCustomerRequest : IValidatableObject
@@ -103,6 +106,10 @@ public readonly record struct CreateCustomerRequest : IValidatableObject
     [Required]
     [MinLength(10)]
     public string CompanyName { get; init; }
+
+    [Required]
+    [EmailAddress]
+    public string EmailAddress { get; init; }
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
 
