@@ -31,13 +31,16 @@ public static class CustomerEndpoints
 
 
         _customerGroupWithValidation.MapPost("/",
-            async (CreateCustomerRequest request, CustomerData data) =>
+            async (CreateCustomerRequest request, 
+                    CustomerData data,
+                    ICustomerEmailService customerEmailService) =>
             {
                 var newCustomer = new Customer(Guid.NewGuid(), request.CompanyName, request.EmailAddress, new());
                 await data.AddAsync(newCustomer);
 
-                var customerEmailService = new CustomerEmailService(new EmailMessageFactory(), new ConsoleOnlyEmailSenderService());
-                customerEmailService.SendWelcomeEmail(newCustomer);
+              
+
+                await customerEmailService.SendWelcomeEmail(newCustomer);
                 return Results.Created($"/customers/{newCustomer.Id}", newCustomer);
             })
             .AddEndpointFilter<ValidateCustomer>()
