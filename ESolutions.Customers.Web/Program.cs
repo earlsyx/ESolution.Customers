@@ -5,6 +5,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<CustomerData>();
+
+var mailSettings = builder.Configuration.GetSection(nameof(MailSettings)).Get<MailSettings>();
+builder.Services.AddSingleton(mailSettings);
+
+
 builder.Services.AddTransient<IEmailMessageFactory, EmailMessageFactory>();
 
 if (builder.Environment.IsDevelopment())
