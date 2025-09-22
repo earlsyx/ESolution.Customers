@@ -6,7 +6,17 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<CustomerData>();
 builder.Services.AddTransient<IEmailMessageFactory, EmailMessageFactory>();
-builder.Services.AddTransient<IEmailSenderService, ConsoleOnlyEmailSenderService>();
+
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddTransient<IEmailSenderService, ConsoleOnlyEmailSenderService>();
+}
+else
+{
+    builder.Services.AddTransient<IEmailSenderService, MailKitEmailSenderService>();
+
+}
+
 builder.Services.AddTransient<ICustomerEmailService, CustomerEmailService>();
 
 
