@@ -6,7 +6,8 @@ public static class CustomerEndpoints
     public static void MapCustomerEndpoints(this WebApplication app)
     {
         var _customerGroup = app.MapGroup("/customers")
-    .WithOpenApi();
+    .WithOpenApi()
+    .WithTags("Customers");
 
         var _customerGroupWithValidation = _customerGroup.MapGroup("/")
             .WithParameterValidation();
@@ -18,8 +19,10 @@ public static class CustomerEndpoints
             var customers = await data.ListAsync();
             return TypedResults.Ok(customers);
         })
-        .WithName("ListCustomers")
-        .WithOpenApi();
+            .WithDescription("(description)List all customers.")
+            .WithSummary("(summary)List Customers")
+        .WithName("ListCustomers");
+        //.WithOpenApi();
 
         _customerGroup.MapGet("/{id:guid}", async (Guid id, CustomerData data) =>
 
@@ -31,22 +34,19 @@ public static class CustomerEndpoints
 
 
         _customerGroupWithValidation.MapPost("/",
-            async (CreateCustomerRequest request, 
+            async (CreateCustomerRequest request,
                     CustomerData data,
                     ICustomerEmailService customerEmailService) =>
             {
                 var newCustomer = new Customer(Guid.NewGuid(), request.CompanyName, request.EmailAddress, new());
                 await data.AddAsync(newCustomer);
 
-              
-
                 await customerEmailService.SendWelcomeEmail(newCustomer);
                 return Results.Created($"/customers/{newCustomer.Id}", newCustomer);
             })
-            .AddEndpointFilter<ValidateCustomer>()
-
-        .WithName("AddCustomer")
-        ;
+            .Produces<Customer>(StatusCodes.Status201Created)
+            .ProducesValidationProblem(StatusCodes.Status400BadRequest)
+        .WithName("AddCustomer");
 
 
         _customerGroupWithValidation.MapPut("/{id:guid}",
@@ -63,11 +63,13 @@ public static class CustomerEndpoints
                 await data.UpdateAsync(id, updatedCustomer);
                 return Results.Ok(updatedCustomer);
             })
+            .ProducesProblem(StatusCodes.Status404NotFound)
         .WithName("UpdateCustomer")
         ;
 
-        _customerGroup.MapDelete("/{id:guid}", async (Guid id,
-            CustomerData data) =>
+        _customerGroup.MapDelete("/{id:guid}",
+            [EndpointDescription("(description)Delete a customer.")]
+        async (Guid id, CustomerData data) =>
         {
 
             if (await data.GetIdByAsync(id) is null) return Results.NotFound();
@@ -75,14 +77,15 @@ public static class CustomerEndpoints
             await data.DeleteAsync(id);
             return Results.NoContent();
         })
+        .ProducesProblem(StatusCodes.Status404NotFound)
         .WithName("DeleteCustomer");
-        
+
 
     }
 
 }
 
-public record Customer(Guid Id, string CompanyName, string EmailAddress ,List<Project> Projects);
+public record Customer(Guid Id, string CompanyName, string EmailAddress, List<Project> Projects);
 public record Project(Guid Id, string ProjectName, Guid CustomerId);
 
 public readonly record struct UpdateCustomerRequest : IValidatableObject

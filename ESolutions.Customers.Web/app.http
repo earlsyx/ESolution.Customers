@@ -20,7 +20,8 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "companyName": "NimblePros"
+  "companyName": "stringstri",
+  "emailAddress": "user@example.com"
 }
 
 
