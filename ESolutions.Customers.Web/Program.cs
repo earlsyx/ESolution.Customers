@@ -5,6 +5,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<CustomerData>();
+builder.Services.AddTransient<IEmailMessageFactory, EmailMessageFactory>();
+builder.Services.AddTransient<IEmailSenderService, ConsoleOnlyEmailSenderService>();
+builder.Services.AddTransient<ICustomerEmailService, CustomerEmailService>();
+
 
 var app = builder.Build();
 

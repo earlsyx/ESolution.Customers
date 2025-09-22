@@ -3,7 +3,8 @@ using MimeKit;
 
 namespace ESolutions.Customers.Web.Customers;
 
-internal class CustomerEmailService
+
+public class CustomerEmailService : ICustomerEmailService
 {
     private readonly IEmailMessageFactory _emailMessageFactory;
     private readonly IEmailSenderService _emailSenderService;
@@ -15,7 +16,7 @@ internal class CustomerEmailService
         this._emailSenderService = emailSenderService;
     }
 
-    internal async Task SendWelcomeEmail(Customer newCustomer)
+    public async Task SendWelcomeEmail(Customer newCustomer)
     {
         string from = "donotreply@nimblepros.com";
         string to = newCustomer.EmailAddress;
