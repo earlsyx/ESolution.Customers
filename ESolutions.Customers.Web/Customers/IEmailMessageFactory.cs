@@ -1,7 +1,6 @@
-﻿namespace ESolutions.Customers.Web.Customers
+﻿namespace ESolutions.Customers.Web.Customers;
+
+public interface IEmailMessageFactory
 {
-    public interface IEmailMessageFactory
-    {
-        string GenerateWelcomeEmailBody(Customer newCustomer);
-    }
+    string GenerateWelcomeEmailBody(Customer newCustomer);
 }

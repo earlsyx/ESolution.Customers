@@ -1,45 +1,40 @@
 @hostname=localhost
-@port=5132
-@host={{hostname}}:{{port}}
+@httpPort=5132
+@httpsPort=7289
 
-GET http://{{host}}/customers
-Accept: application/json
-
-
-###
-
-@customerId=25c9868f-a724-4257-9758-09e372116936 
-GET http://{{host}}/customers/{{customerId}}
+### List (HTTP)
+GET http://{{hostname}}:{{httpPort}}/customers
 Accept: application/json
 
 ###
+@customerId=1f1efc05-7e47-48b8-8fa4-6046f9cb2524
+GET http://{{hostname}}:{{httpPort}}/customers/{{customerId}}
+Accept: application/json
 
-
-POST http://{{host}}/customers
+### Create (HTTPS) – if running the https profile
+POST https://{{hostname}}:{{httpsPort}}/customers
 Accept: application/json
 Content-Type: application/json
 
 {
-  "companyName": "stringstri",
-  "emailAddress": "user@example.com"
+  "companyName": "NimblePros2ehhhw",
+  "emailAddress": "test@test.com"
 }
 
-
-@customerIdToUpdate=25c9868f-a724-4257-9758-09e372116936 
-PUT http://{{host}}/customers/{{customerIdToUpdate}}
+### Update (HTTP)
+@customerIdToUpdate=1f1efc05-7e47-48b8-8fa4-6046f9cb2524
+PUT http://{{hostname}}:{{httpPort}}/customers/{{customerIdToUpdate}}
 Accept: application/json
 Content-Type: application/json
 
 {
-  "companyName": "NimblePros"
+  "companyName": "gwqgewqewqeqweqw"
 }
-###
 
-@customerIdToDelete=25c9868f-a724-4257-9758-09e372116936 
-DELETE http://{{host}}/customers/{{customerIdToDelete}}
+### Delete (HTTP)
+@customerIdToDelete=2018e8cd-7668-458c-a489-4b8a9406ff16
+DELETE http://{{hostname}}:{{httpPort}}/customers/{{customerIdToDelete}}
 Accept: application/json
 
-###
-
-GET http://{{host}}/brewcofee
-
+### Coffee (check the route name – likely /brewcoffee)
+GET http://{{hostname}}:{{httpPort}}/brewcoffee

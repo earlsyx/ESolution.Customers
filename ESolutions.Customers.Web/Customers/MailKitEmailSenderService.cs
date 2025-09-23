@@ -1,5 +1,5 @@
-﻿using MailKit.Net.Smtp;
-using MimeKit;
+﻿using MimeKit;
+using MailKit.Net.Smtp;
 
 namespace ESolutions.Customers.Web.Customers;
 
@@ -9,11 +9,11 @@ public class MailKitEmailSenderService(IConfiguration config,
 {
     private readonly IConfiguration _config = config;
     private readonly MailSettings _mailSettings = mailSettings;
+
     public async Task SendEmailAsync(string from, string to, string subject, string body)
     {
-        int port = int.Parse(_config["MailSettings:Port"]); 
-
-        using (SmtpClient client = new SmtpClient()) // use local host and a test server
+        int port = int.Parse(_config["MailSettings:Port"]);
+        using (SmtpClient client = new SmtpClient()) // use localhost and a test server
         {
             client.Connect(_mailSettings.Server, _mailSettings.Port, false);
             var message = new MimeMessage();
@@ -23,10 +23,10 @@ public class MailKitEmailSenderService(IConfiguration config,
             message.Body = new TextPart("plain") { Text = body };
 
             await client.SendAsync(message);
-            Console.WriteLine("Email Sent!");
+            Console.WriteLine("Email sent!");
 
             client.Disconnect(true);
         }
     }
-}
 
+}

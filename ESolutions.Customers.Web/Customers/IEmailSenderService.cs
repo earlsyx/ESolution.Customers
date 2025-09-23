@@ -1,8 +1,6 @@
-﻿
-namespace ESolutions.Customers.Web.Customers
+﻿namespace ESolutions.Customers.Web.Customers;
+
+public interface IEmailSenderService
 {
-    public interface IEmailSenderService
-    {
-        Task SendEmailAsync(string from, string to, string subject, string body);
-    }
+    Task SendEmailAsync(string from, string to, string subject, string body);
 }

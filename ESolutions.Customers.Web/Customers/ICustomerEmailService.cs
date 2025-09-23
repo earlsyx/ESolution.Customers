@@ -1,4 +1,4 @@
-﻿using ESolutions.Customers.Web.Customers;
+﻿namespace ESolutions.Customers.Web.Customers;
 
 public interface ICustomerEmailService
 {

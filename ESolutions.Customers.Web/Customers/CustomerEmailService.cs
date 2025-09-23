@@ -1,51 +1,68 @@
-﻿namespace ESolutions.Customers.Web.Customers;
+﻿using ESolutions.Customers.Web.Customers;
 
+namespace ESolutions.Customers.Web.Customers;
 
-public class CustomerEmailService : ICustomerEmailService
+public class CustomerData : ICustomerData
 {
-    private readonly IEmailMessageFactory _emailMessageFactory;
-    private readonly IEmailSenderService _emailSenderService;
+    private static List<Customer> _customers = new();
 
-    public CustomerEmailService(IEmailMessageFactory emailMessageFactory,
-        IEmailSenderService emailSenderService)
+    static CustomerData()
     {
-        this._emailMessageFactory = emailMessageFactory;
-        this._emailSenderService = emailSenderService;
+        string testEmail = "test@test.com";
+
+        _customers.AddRange(new[]
+        {
+            new Customer(Guid.Parse("456f88c4-9727-4cb2-b19a-fe34836dc2d4"),
+                "Acme Inc.", testEmail, new()),
+            new Customer(Guid.NewGuid(), testEmail, "Contoso Ltd.", new()),
+            new Customer(Guid.NewGuid(), testEmail, "Fabrikam Corp.", new())
+        });
+        _customers[0].Projects.AddRange(new[]
+        {
+            new Project(Guid.NewGuid(), "Project 1", _customers[0].Id),
+            new Project(Guid.NewGuid(), "Project 2", _customers[0].Id)
+        });
+        _customers[1].Projects.AddRange(new[]
+        {
+            new Project(Guid.NewGuid(), "Project 3", _customers[1].Id),
+            new Project(Guid.NewGuid(), "Project 4", _customers[1].Id)
+        });
     }
 
-    public async Task SendWelcomeEmail(Customer newCustomer)
+    public Task<IEnumerable<Customer>> List()
     {
-        string from = "donotreply@nimblepros.com";
-        string to = newCustomer.EmailAddress;
-        string subject = "Welcome!";
-
-        string body = _emailMessageFactory.GenerateWelcomeEmailBody(newCustomer);
-
-        Console.WriteLine("Attempting to send email to {to} from {from} with subject {subject}...", to, from, subject);
-
-        await _emailSenderService.SendEmailAsync(from, to, subject, body);
+        return Task.FromResult(_customers.ToArray().AsEnumerable());
     }
 
-
-}
-
-public class ConsoleOnlyEmailSenderService : IEmailSenderService
-{
-    public Task SendEmailAsync(string from, string to, string subject, string body)
+    public Task<Customer?> GetById(Guid customerId)
     {
-        Console.WriteLine($"Sending email from {from} to {to} with subject {subject} and body {body}");
+        var customer = _customers.FirstOrDefault(c => c.Id == customerId);
+        return Task.FromResult(customer);
+    }
+
+    public Task Add(Customer customer)
+    {
+        _customers.Add(customer);
         return Task.CompletedTask;
     }
 
-}
-
-public class EmailMessageFactory : IEmailMessageFactory
-{
-    public string GenerateWelcomeEmailBody(Customer newCustomer)
+    public Task Update(Guid id, Customer updatedCustomer)
     {
-        string template = "Welcome to NimblePros, {{CompanyName}}!";
-        string body = template.Replace("{{CompanyName}}", newCustomer.CompanyName);
-        return body;
+        if (_customers.Any(c => c.Id == id))
+        {
+            var index = _customers.FindIndex(c => c.Id == id);
+            _customers[index] = updatedCustomer;
+        }
+        return Task.CompletedTask;
+    }
+
+    public Task DeleteById(Guid id)
+    {
+        if (_customers.Any(c => c.Id == id))
+        {
+            var index = _customers.FindIndex(c => c.Id == id);
+            _customers.RemoveAt(index);
+        }
+        return Task.CompletedTask;
     }
 }
-
